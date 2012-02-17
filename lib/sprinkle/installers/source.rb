@@ -97,11 +97,7 @@ module Sprinkle
         end
 
         def download_commands #:nodoc:
-          if File.exist? @source
-            [ "cp #{@source} #{@options[:archives].first}/#{archive_name}" ]
-          else
-            [ "wget -cq --directory-prefix='#{@options[:archives].first}' #{@source}" ]
-          end
+          [ "wget -cq -O '#{@options[:archives].first}/#{archive_name}' #{@source}" ]
         end
 
         def extract_commands #:nodoc:
@@ -120,7 +116,7 @@ module Sprinkle
           }
 
           extras.inject(command) { |m, (k, v)|  m << create_options(k, v) if options[k]; m }
-          
+
           [ command << " > #{@package.name}-configure.log 2>&1'" ]
         end
 
@@ -173,7 +169,11 @@ module Sprinkle
         end
 
         def archive_name #:nodoc:
-          name = @options[:custom_archive] || @source.split('/').last
+          name = @source.split('/').last
+          if options[:custom_archive]
+            name = options[:custom_archive]
+            name = name.join if name.is_a? Array
+          end
           raise "Unable to determine archive name for source: #{source}, please update code knowledge" unless name
           name
         end
