@@ -7,7 +7,7 @@ module Sprinkle
       Sprinkle::Verify.register(Sprinkle::Verifiers::Users)
       
       # Tests that the user exists
-      def has_user(user)
+      def has_user_(user)
         @commands << "id #{user}"
       end
     end
